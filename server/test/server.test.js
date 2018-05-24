@@ -95,7 +95,7 @@ describe('GET /todos/:id',()=>{
     request(app)
     .get(`/todos/123`)
     .send()
-    .expect(400)
+    .expect(404)
     .end(done);
   });
 });
