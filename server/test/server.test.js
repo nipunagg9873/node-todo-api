@@ -16,7 +16,10 @@ const todos=[{
 beforeEach((done)=>{
   Todo.remove({}).then(()=>{
     Todo.insertMany(todos);
-  }).then(()=>done(),(e)=>console.log(e));
+  }).then(()=>done(),(e)=>{
+    console.log(e);
+    done();
+});
 });
 
 describe('POST /todo',()=>{
@@ -98,4 +101,23 @@ describe('GET /todos/:id',()=>{
     .expect(404)
     .end(done);
   });
+});
+describe('Delete /todos/:id',(done)=>{
+  it('should delete todo with id',(done)=>{
+    request(app)
+  .delete(`/todos/${todos[0]._id.toHexString()}`)
+  .send()
+  .expect(200)
+  .expect((res)=>{
+    expect(res.body.todo._id).toBe(todos[0]._id.toHexString())
+  }).end((err,res)=>{
+    if(err)
+    return done(err);
+  });
+    Todo.findById(todos[0]._id.toHexString()).then((todo)=>{
+      expect(todo).toNotExist();
+      done();
+    }).catch((e)=>done(e));
+});
+
 });
