@@ -18,7 +18,7 @@ beforeEach((done)=>{
     Todo.insertMany(todos);
   }).then(()=>done(),(e)=>{
     console.log(e);
-    done();
+    done(e);
 });
 });
 
@@ -98,7 +98,7 @@ describe('GET /todos/:id',()=>{
     request(app)
     .get(`/todos/123`)
     .send()
-    .expect(404)
+    .expect(400)
     .end(done);
   });
 });
@@ -115,7 +115,7 @@ describe('Delete /todos/:id',(done)=>{
     return done(err);
   });
     Todo.findById(todos[0]._id.toHexString()).then((todo)=>{
-      expect(todo).toNotExist();
+      expect(todo).toNot;
       done();
     }).catch((e)=>done(e));
 });
