@@ -4,16 +4,17 @@ const {ObjectID}=require('mongodb')
 
 const {app}=require('./../server');
 const {Todo}=require('./../models/todo');
-const {todos,populateTodos}=require('./seed/seed');
+const {todos,populateTodos,users,populateUsers}=require('./seed/seed');
 
 beforeEach(populateTodos);
+beforeEach(populateUsers);
 
-describe('useless test',()=>{
-  it(
-    'should do nothing',(done)=>{
-      setTimeout(done, 2100);
-    });
-});
+// describe('useless test',()=>{
+//   it(
+//     'should do nothing',(done)=>{
+//       setTimeout(done, 2100);
+//     });
+// });
 
 describe('POST /todos',()=>{
   it('should create a new todo',  (done)=>  {
@@ -165,7 +166,7 @@ describe('PATCH /todos/:id', () => {
       .expect((res) => {
         expect(res.body.text).toBe(text);
         expect(res.body.completed).toBe(false);
-        expect(res.body.completedAt).toBeNull();
+        expect(res.body.completedAt).toNotExist();
       })
       .end(done);
   });
