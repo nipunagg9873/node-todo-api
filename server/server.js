@@ -6,7 +6,7 @@ const bodyParser=require('body-parser');
 const ObjectId=require('mongodb').ObjectID;
 
 var {mongoose}=require('./db/mongoose');
-var {todo}=require('./models/todo');
+var {Todo}=require('./models/todo');
 var {User}=require('./models/user');
 var {authenticate}=require('./middleware/authenticate')
 
@@ -16,7 +16,7 @@ var port=process.env.PORT||3000;
 app.use(bodyParser.json());
 
 app.post('/todos',(req,res)=>{
-  var newtodo=new todo({
+  var newtodo=new Todo({
     text:req.body.text
   });
   newtodo.save().then((doc)=>{
@@ -27,7 +27,7 @@ app.post('/todos',(req,res)=>{
 });
 
 app.get('/todos',(req,res)=>{
-  todo.find().then((todos)=>{
+  Todo.find().then((todos)=>{
     res.send({todos});
   },(e)=>{
     res.status(400).send(e);
@@ -39,7 +39,7 @@ app.get('/todos/:id',(req,res)=>{
   // res.send(id);
   if(ObjectId.isValid(id))
   {
-      todo.findById(id).then((todo)=>{
+      Todo.findById(id).then((todo)=>{
         if(todo)
         {
           res.send({todo});
@@ -60,7 +60,7 @@ app.delete('/todos/:id',(req,res)=>{
   var id=req.params.id;
   if(ObjectId.isValid(id))
   {
-    todo.findByIdAndRemove(id).then((todo)=>{
+    Todo.findByIdAndRemove(id).then((todo)=>{
       if(todo)
       {
         res.status(200).send({todo});
@@ -87,7 +87,7 @@ app.patch('/todos/:id',(req,res)=>{
     body.completed=false;
     body.completedAt=null;
   }
-  todo.findByIdAndUpdate(id,{ $set :body},{new: true}).then((todo)=>{
+  Todo.findByIdAndUpdate(id,{ $set :body},{new: true}).then((todo)=>{
     if(!todo)
     {
       res.status(404).send();

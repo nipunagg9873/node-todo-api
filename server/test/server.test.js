@@ -3,46 +3,33 @@ const request=require('supertest')
 const {ObjectID}=require('mongodb')
 
 const {app}=require('./../server');
-const Todo=require('./../models/todo').todo;
+const {Todo}=require('./../models/todo');
+const {todos,populateTodos}=require('./seed/seed');
 
-const todos=[{
-  _id: new ObjectID(),
-  text: 'first test todo'
-}, {
-  _id: new ObjectID(),
-  text: 'second test todo'
-}];
+beforeEach(populateTodos);
 
-beforeEach((done)=>{
-  Todo.remove({}).then(()=>{
-    Todo.insertMany(todos);
-  }).then(()=>done(),(e)=>{
-    console.log(e);
-    done(e);
-});
-});
-
-describe('POST /todo',()=>{
-  it('should create new todo',(done)=>{
-    var text="test todo text";
+describe('POST /todos',()=>{
+  it('should create a new todo', (done) => {
+    var text = 'Test todo text';
 
     request(app)
       .post('/todos')
       .send({text})
       .expect(200)
-      .expect((res)=>{
+      .expect((res) => {
         expect(res.body.text).toBe(text);
       })
-      .end((err,res)=>{
-        if(err) {
-        return done(err);
+      .end((err, res) => {
+        if (err) {
+          return done(err);
         }
-        Todo.find({text}).then((tds)=>{
-          expect(tds.length).toBe(1);
-          expect(tds[0].text).toBe(text);
-          done();
-        }).catch((e)=>done(e));
+
+        Todo.find({text}).then((todos) => {
+          expect(todos.length).toBe(1);
+          expect(todos[0].text).toBe(text);
+        }).catch((e) => done(e));
       });
+      done();
   });
 
   it('should not create a todo with invalid data',(done)=>{
