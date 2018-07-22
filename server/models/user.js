@@ -84,6 +84,6 @@ Userschema.pre('save',function (next) {
   }
 });
 
-var User=mongoose.model('User',Userschema);
+var User=mongoose.model('user',Userschema);
 
 module.exports={User};
