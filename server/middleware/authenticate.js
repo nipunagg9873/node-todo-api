@@ -2,6 +2,10 @@ const {User}=require('./../models/user');
 
 var authenticate=(req,res,next)=> {
       var token=req.header('x-auth');
+      if(!token)
+      {
+        return res.status(401).send({});
+      }
       User.findByToken(token).then((user)=>{
       if(!user)
       {
@@ -11,8 +15,8 @@ var authenticate=(req,res,next)=> {
       req.token=token;
       next();
     }).catch((e)=>{
-      console.log(e);
-      res.status(401).send();
+      // console.log(e);
+      return res.status(401).send();
     });
 }
 module.exports={authenticate};
